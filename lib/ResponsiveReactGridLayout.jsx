@@ -38,7 +38,8 @@ type Props<Breakpoint: string = string> = {
 
   // Callbacks
   onBreakpointChange: (Breakpoint, cols: number) => void,
-  onLayoutChange: (Layout, { [key: Breakpoint]: Layout }) => void,
+  onLayoutChange: (Layout, { [key: Breakpoint]: Layout
+}) => void,
   onWidthChange: (
     containerWidth: number,
     margin: [number, number],
@@ -50,7 +51,7 @@ type Props<Breakpoint: string = string> = {
 export default class ResponsiveReactGridLayout extends React.Component<
   Props<>,
   State
-> {
+  > {
   // This should only include propTypes needed in this code; RGL itself
   // will do validation of the rest props passed to it.
   static propTypes = {
@@ -74,7 +75,7 @@ export default class ResponsiveReactGridLayout extends React.Component<
       if (type(props[propName]) !== "[object Object]") {
         throw new Error(
           "Layout property must be an object. Received: " +
-            type(props[propName])
+          type(props[propName])
         );
       }
       Object.keys(props[propName]).forEach(key => {
@@ -86,6 +87,13 @@ export default class ResponsiveReactGridLayout extends React.Component<
         validateLayout(props.layouts[key], "layouts." + key);
       });
     },
+
+    initialLayoutItem: PropTypes.shape({
+      x: PropTypes.number,
+      y: PropTypes.number,
+      h: PropTypes.number,
+      w: PropTypes.number
+    }),
 
     // The width of this component.
     // Required in this propTypes stanza because generateInitialState() will fail without it.
@@ -215,7 +223,8 @@ export default class ResponsiveReactGridLayout extends React.Component<
         layout,
         nextProps.children,
         newCols,
-        compactType
+        compactType,
+        nextProps.initialLayoutItem
       );
 
       // Store the new layout.

@@ -19,17 +19,17 @@ import {
 import GridItem from "./GridItem";
 import type {
   ChildrenArray as ReactChildrenArray,
-  Element as ReactElement
+    Element as ReactElement
 } from "react";
 
 // Types
 import type {
   EventCallback,
-  CompactType,
-  GridResizeEvent,
-  GridDragEvent,
-  Layout,
-  LayoutItem
+    CompactType,
+    GridResizeEvent,
+    GridDragEvent,
+    Layout,
+    LayoutItem
 } from "./utils";
 
 type State = {
@@ -52,6 +52,7 @@ export type Props = {
   verticalCompact: boolean,
   compactType: ?("horizontal" | "vertical"),
   layout: Layout,
+  initialLayoutItem: $Shape<LayoutItem>,
   margin: [number, number],
   containerPadding: [number, number] | null,
   rowHeight: number,
@@ -104,7 +105,7 @@ export default class ReactGridLayout extends React.Component<Props, State> {
     draggableHandle: PropTypes.string,
 
     // Deprecated
-    verticalCompact: function(props: Props) {
+    verticalCompact: function (props: Props) {
       if (
         props.verticalCompact === false &&
         process.env.NODE_ENV !== "production"
@@ -112,7 +113,7 @@ export default class ReactGridLayout extends React.Component<Props, State> {
         console.warn(
           // eslint-disable-line no-console
           "`verticalCompact` on <ReactGridLayout> is deprecated and will be removed soon. " +
-            'Use `compactType`: "horizontal" | "vertical" | null.'
+          'Use `compactType`: "horizontal" | "vertical" | null.'
         );
       }
     },
@@ -121,12 +122,19 @@ export default class ReactGridLayout extends React.Component<Props, State> {
 
     // layout is an array of object with the format:
     // {x: Number, y: Number, w: Number, h: Number, i: String}
-    layout: function(props: Props) {
+    layout: function (props: Props) {
       var layout = props.layout;
       // I hope you're setting the data-grid property on the grid items
       if (layout === undefined) return;
       validateLayout(layout, "layout");
     },
+
+    initialLayoutItem: PropTypes.shape({
+      x: PropTypes.number,
+      y: PropTypes.number,
+      h: PropTypes.number,
+      w: PropTypes.number
+    }),
 
     //
     // Grid Dimensions
@@ -181,17 +189,17 @@ export default class ReactGridLayout extends React.Component<Props, State> {
     //
 
     // Children must not have duplicate keys.
-    children: function(props: Props, propName: string) {
+    children: function (props: Props, propName: string) {
       var children = props[propName];
 
       // Check children keys for duplicates. Throw if found.
       var keys = {};
-      React.Children.forEach(children, function(child) {
+      React.Children.forEach(children, function (child) {
         if (keys[child.key]) {
           throw new Error(
             'Duplicate child key "' +
-              child.key +
-              '" found! This will cause problems in ReactGridLayout.'
+            child.key +
+            '" found! This will cause problems in ReactGridLayout.'
           );
         }
         keys[child.key] = true;
@@ -233,7 +241,8 @@ export default class ReactGridLayout extends React.Component<Props, State> {
       this.props.children,
       this.props.cols,
       // Legacy support for verticalCompact: false
-      this.compactType()
+      this.compactType(),
+      this.props.initialLayoutItem
     ),
     mounted: false,
     oldDragItem: null,
@@ -282,7 +291,8 @@ export default class ReactGridLayout extends React.Component<Props, State> {
         newLayoutBase,
         nextProps.children,
         nextProps.cols,
-        this.compactType(nextProps)
+        this.compactType(nextProps),
+        nextProps.initialLayoutItem
       );
       const oldLayout = this.state.layout;
       this.setState({ layout: newLayout });
