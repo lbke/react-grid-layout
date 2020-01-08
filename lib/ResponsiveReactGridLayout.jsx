@@ -38,20 +38,22 @@ type Props<Breakpoint: string = string> = {
 
   // Callbacks
   onBreakpointChange: (Breakpoint, cols: number) => void,
-  onLayoutChange: (Layout, { [key: Breakpoint]: Layout
-}) => void,
+  onLayoutChange: (Layout, { [key: Breakpoint]: Layout }) => void,
   onWidthChange: (
     containerWidth: number,
     margin: [number, number],
     cols: number,
     containerPadding: [number, number] | null
-  ) => void
+  ) => void,
+
+  // Ref to grid layout
+  reactGridLayoutRef: Function
 };
 
 export default class ResponsiveReactGridLayout extends React.Component<
   Props<>,
   State
-  > {
+> {
   // This should only include propTypes needed in this code; RGL itself
   // will do validation of the rest props passed to it.
   static propTypes = {
@@ -75,7 +77,7 @@ export default class ResponsiveReactGridLayout extends React.Component<
       if (type(props[propName]) !== "[object Object]") {
         throw new Error(
           "Layout property must be an object. Received: " +
-          type(props[propName])
+            type(props[propName])
         );
       }
       Object.keys(props[propName]).forEach(key => {
@@ -111,7 +113,10 @@ export default class ResponsiveReactGridLayout extends React.Component<
     onLayoutChange: PropTypes.func,
 
     // Calls back with (containerWidth, margin, cols, containerPadding)
-    onWidthChange: PropTypes.func
+    onWidthChange: PropTypes.func,
+
+    // ref passed down
+    reactGridLayoutRef: PropTypes.func
   };
 
   static defaultProps = {
@@ -258,6 +263,7 @@ export default class ResponsiveReactGridLayout extends React.Component<
       onBreakpointChange,
       onLayoutChange,
       onWidthChange,
+      reactGridLayoutRef,
       ...other
     } = this.props;
     /* eslint-enable no-unused-vars */
@@ -268,6 +274,7 @@ export default class ResponsiveReactGridLayout extends React.Component<
         onLayoutChange={this.onLayoutChange}
         layout={this.state.layout}
         cols={this.state.cols}
+        ref={reactGridLayoutRef}
       />
     );
   }

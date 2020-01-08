@@ -155,13 +155,15 @@ var ResponsiveReactGridLayout = function (_React$Component) {
         onBreakpointChange = _props2.onBreakpointChange,
         onLayoutChange = _props2.onLayoutChange,
         onWidthChange = _props2.onWidthChange,
-        other = _objectWithoutProperties(_props2, ["breakpoint", "breakpoints", "cols", "layouts", "onBreakpointChange", "onLayoutChange", "onWidthChange"]);
+        reactGridLayoutRef = _props2.reactGridLayoutRef,
+        other = _objectWithoutProperties(_props2, ["breakpoint", "breakpoints", "cols", "layouts", "onBreakpointChange", "onLayoutChange", "onWidthChange", "reactGridLayoutRef"]);
     /* eslint-enable no-unused-vars */
 
     return _react2.default.createElement(_ReactGridLayout2.default, _extends({}, other, {
       onLayoutChange: this.onLayoutChange,
       layout: this.state.layout,
-      cols: this.state.cols
+      cols: this.state.cols,
+      ref: reactGridLayoutRef
     }));
   };
 
@@ -221,7 +223,10 @@ ResponsiveReactGridLayout.propTypes = {
   onLayoutChange: _propTypes2.default.func,
 
   // Calls back with (containerWidth, margin, cols, containerPadding)
-  onWidthChange: _propTypes2.default.func
+  onWidthChange: _propTypes2.default.func,
+
+  // ref passed down
+  reactGridLayoutRef: _propTypes2.default.func
 };
 ResponsiveReactGridLayout.defaultProps = {
   breakpoints: { lg: 1200, md: 996, sm: 768, xs: 480, xxs: 0 },
